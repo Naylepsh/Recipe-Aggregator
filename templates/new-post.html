@@ -8,7 +8,18 @@
   crossorigin="anonymous">
 </head>
 <body>
-  <h1>Welcome to Foodinterest!</h1>
+  <form action="/pins" method="POST">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title">
+    <label for="description">Description</label>
+    <input type="text" name="description" id="description">
+    <label for="image">Image</label>
+    <input type="text" name="image" id="image">
+    <label for="source">Source</label>
+    <input type="text" name="source" id="source">
+    <button>Submit</button>
+  </form>
+
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" 
   integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" 
