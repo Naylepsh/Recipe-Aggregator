@@ -9,7 +9,7 @@ use diesel::r2d2::{self, ConnectionManager};
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
-#[derive(Insertable, Serialize, Queryable)]
+#[derive(Insertable, Serialize, Deserialize, Queryable)]
 pub struct Pin {
     pub id: String,
     pub title: Option<String>,
@@ -67,10 +67,20 @@ impl NewPin {
   }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct NewPinParams {
-  pub title: Option<String>,
-  pub description: Option<String>,
-  pub image: String,
-  pub source: String
+
+#[derive(Serialize, Deserialize)] 
+pub struct PinList(pub Vec<Pin>);
+
+impl PinList {
+  pub fn list(pool: web::Data<Pool>) -> Self {
+    let conn: &SqliteConnection = &pool.get().unwrap();
+
+    let result = 
+      pins
+        .limit(10)
+        .load::<Pin>(conn)
+        .expect("Error loading products");
+
+    PinList(result)
+  }
 }
