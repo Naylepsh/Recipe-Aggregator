@@ -1,8 +1,12 @@
 // Load modules
 pub mod handlers;
+pub mod db;
 
 use actix_web::{web, middleware, App, HttpServer};
 use tera::Tera;
+
+#[macro_use]
+extern crate diesel;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -15,6 +19,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .data(tera)
+            .data(db::establish_connection()) // connect to database
             .wrap(middleware::Logger::default()) // enable logger
             .service(web::resource("/").route(web::get().to(handlers::landing::index)))
     })
