@@ -21,12 +21,12 @@ pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web:
 
   let mut ctx = tera::Context::new();
   ctx.insert("pin", &pin);
-  let s = tmpl.render("pin.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
+  let s = tmpl.render("pins/show.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 pub async fn new(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpResponse, Error> {
-  let s = tmpl.render("new-post.html", &tera::Context::new())
+  let s = tmpl.render("pins/new.html", &tera::Context::new())
               .map_err(|_| error::ErrorInternalServerError("Template error"))?;
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
