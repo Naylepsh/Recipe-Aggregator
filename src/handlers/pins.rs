@@ -20,7 +20,6 @@ pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web:
 -> Result<HttpResponse, Error> {
   let pin = web::block(move || Pin::find(id.into_inner(), pool))
   .await
-  .map(|pin| pin)
   .map_err(|_| HttpResponse::InternalServerError())?;
 
   let mut ctx = tera::Context::new();

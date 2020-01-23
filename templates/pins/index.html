@@ -12,7 +12,10 @@
 
   <ul>
   {% for pin in pins %}
-    <li><a href="{{ pin.source }}">{{ pin.source }}</a></li>
+    <li>
+      {{ pin.id }}
+      <a href="{{ pin.source }}">{{ pin.source }}</a>
+    </li>
   {% endfor %}
   </ul>
 
