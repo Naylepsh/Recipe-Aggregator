@@ -13,13 +13,16 @@ pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: Htt
 }
 
 pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest)
--> Result<HttpResponse, HttpResponse> {
-  let result = Pin::find(id.into_inner(), pool);
-  result
-  .map(|pin| HttpResponse::Ok().json(pin))
-        .map_err(|e| {
-            HttpResponse::InternalServerError().json(e.to_string())
-        })
+-> Result<HttpResponse, Error> {
+  let pin = web::block(move || Pin::find(id.into_inner(), pool))
+  .await
+  .map(|pin| pin)
+  .map_err(|_| HttpResponse::InternalServerError())?;
+
+  let mut ctx = tera::Context::new();
+  ctx.insert("pin", &pin);
+  let s = tmpl.render("pin.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
+  Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 pub async fn new(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpResponse, Error> {
