@@ -29,7 +29,8 @@ impl Pin {
     }
   }
 
-  pub fn find(_id: &String, connection: &SqliteConnection) -> Result<Pin, diesel::result::Error> {
+  pub fn find(_id: String, pool: web::Data<Pool>) -> Result<Pin, diesel::result::Error> {
+    let connection: &SqliteConnection = &pool.get().unwrap();
     pins::table.find(_id).first(connection)
   }
 }
@@ -46,7 +47,7 @@ pub struct NewPin {
 
 impl NewPin {
   pub fn create(&self, pool: web::Data<Pool>) -> Result<Pin, diesel::result::Error> {
-    let conn: &SqliteConnection = &pool.get().unwrap();
+    let connection: &SqliteConnection = &pool.get().unwrap();
     let uuid = format!("{}", uuid::Uuid::new_v4());
     let x = uuid.clone();
     
@@ -60,9 +61,9 @@ impl NewPin {
     
     diesel::insert_into(pins::table)
       .values(pin)
-      .execute(conn)?;
+      .execute(connection)?;
     
-    let mut items = pins.filter(id.eq(x)).load::<Pin>(conn)?;
+    let mut items = pins.filter(id.eq(x)).load::<Pin>(connection)?;
     Ok(items.pop().unwrap())
   }
 }

@@ -10,13 +10,19 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest) -> Result<HttpResponse, Error> {
   let pin_list = PinList::list(pool);
   Ok(HttpResponse::Ok().json(pin_list))
-  // Ok(web::block(move || PinList::list(pool))
-  // .await
-  // .map(|pins| HttpResponse::Ok().json(pins))
-  // .map_err(|_| HttpResponse::InternalServerError())?)
 }
 
-pub async fn new_post(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpResponse, Error> {
+pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest)
+-> Result<HttpResponse, HttpResponse> {
+  let result = Pin::find(id.into_inner(), pool);
+  result
+  .map(|pin| HttpResponse::Ok().json(pin))
+        .map_err(|e| {
+            HttpResponse::InternalServerError().json(e.to_string())
+        })
+}
+
+pub async fn new(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpResponse, Error> {
   let s = tmpl.render("new-post.html", &tera::Context::new())
               .map_err(|_| error::ErrorInternalServerError("Template error"))?;
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
@@ -29,3 +35,9 @@ pub async fn create(params: web::Form<NewPin>, pool: web::Data<Pool>) -> Result<
   .map(|pin| HttpResponse::Ok().json(pin))
   .map_err(|_| HttpResponse::InternalServerError())?)
 }
+
+// pub async fn edit(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+//   let s = tmpl.render("edit-post.html", &tera::Context::new())
+//               .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+//   Ok(HttpResponse::Ok().content_type("text/html").body(s))
+// }

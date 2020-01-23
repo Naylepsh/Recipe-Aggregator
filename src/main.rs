@@ -24,10 +24,12 @@ async fn main() -> std::io::Result<()> {
             .data(db::establish_connection()) // connect to database
             .wrap(middleware::Logger::default()) // enable logger
             .service(web::resource("/").route(web::get().to(handlers::landing::index)))
-            .service(web::resource("/pins/new").route(web::get().to(handlers::pins::new_post)))
+            .service(web::resource("/pins/new").route(web::get().to(handlers::pins::new)))
             .service(web::resource("/pins")
                 .route(web::get().to(handlers::pins::index))
                 .route(web::post().to(handlers::pins::create)))
+            .service(web::resource("/pins/{id}")
+                .route(web::get().to(handlers::pins::show)))
     })
     .bind("127.0.0.1:8080")?
     .run()
