@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
             Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
 
         App::new()
-            .data(tera)
+            .data(tera) // enable tera templates
             .data(db::establish_connection()) // connect to database
             .wrap(middleware::Logger::default()) // enable logger
             .service(web::resource("/").route(web::get().to(handlers::landing::index)))

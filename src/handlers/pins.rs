@@ -9,7 +9,11 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest) -> Result<HttpResponse, Error> {
   let pin_list = PinList::list(pool);
-  Ok(HttpResponse::Ok().json(pin_list))
+
+  let mut ctx = tera::Context::new();
+  ctx.insert("pins", &pin_list);
+  let s = tmpl.render("pins/index.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
+  Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
 pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest)
