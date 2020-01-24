@@ -33,6 +33,8 @@ async fn main() -> std::io::Result<()> {
             .service(web::resource("/pins/{id}/edit")
                 .route(web::get().to(handlers::pins::edit))
                 .route(web::post().to(handlers::pins::update)))
+            .service(web::resource("/pins/{id}/delete")
+                .route(web::post().to(handlers::pins::destroy)))
     })
     .bind("127.0.0.1:8080")?
     .run()

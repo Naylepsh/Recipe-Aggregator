@@ -37,8 +37,14 @@ impl Pin {
   pub fn update(_id: String, pin_params: NewPin, pool: web::Data<Pool>) -> Result<(), diesel::result::Error> {
     let connection: &SqliteConnection = &pool.get().unwrap();
     diesel::update(pins::table.find(_id))
-        .set(pin_params)
-        .execute(connection)?;
+      .set(pin_params)
+      .execute(connection)?;
+    Ok(())
+  }
+
+  pub fn destroy(_id: String, pool: web::Data<Pool>) -> Result<(), diesel::result::Error> {
+    let connection: &SqliteConnection = &pool.get().unwrap();
+    diesel::delete(pins::table.find(_id)).execute(connection)?;
     Ok(())
   }
 }

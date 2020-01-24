@@ -7,7 +7,7 @@ use crate::models::pin::PinList;
 
 type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
-pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest) -> Result<HttpResponse, Error> {
+pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
   let pin_list = PinList::list(pool);
 
   let mut ctx = tera::Context::new();
@@ -61,4 +61,13 @@ pub async fn update(id: web::Path<String>, tmpl: web::Data<tera::Tera>, params: 
   .map_err(|_| HttpResponse::InternalServerError())?;
 
   show(id_backup, tmpl, pool_backup).await
+}
+
+pub async fn destroy(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+  let pool_backup = pool.clone();
+  web::block(move || Pin::destroy(id.into_inner(), pool))
+  .await
+  .map_err(|_| HttpResponse::InternalServerError())?;
+
+  index(tmpl, pool_backup).await
 }
