@@ -1,3 +1,106 @@
-{% include "partials/header.html" %}
-  <h1>Welcome to Foodinterest!</h1>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YelpCamp</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+          body {
+            background-color: black;
+          }
+
+          #landing-header {
+            z-index: 1;
+            position: relative;
+            text-align: center;
+            padding-top: 40vh;
+          }
+
+          #landing-header h1 {
+            color: white;
+          }
+
+          .slideshow {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+          }
+
+          .slideshow li { 
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            opacity: 0;
+            z-index: 0;
+            animation: imageAnimation 50s linear infinite; 
+          }
+
+          .slideshow li:nth-child(1) { 
+            background-image: url(https://cdn.pixabay.com/photo/2016/03/10/18/44/top-view-1248955_1280.jpg) 
+          }
+          .slideshow li:nth-child(2) { 
+            background-image: url(https://cdn.pixabay.com/photo/2018/04/18/17/22/dessert-3331009_1280.jpg);
+            animation-delay: 10s; 
+          }
+          .slideshow li:nth-child(3) { 
+            background-image: url(https://images.unsplash.com/photo-1482049016688-2d3e1b311543?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=653&q=80);
+            animation-delay: 20s; 
+          }
+          .slideshow li:nth-child(4) { 
+            background-image: url(https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80);
+            animation-delay: 30s; 
+          }
+          .slideshow li:nth-child(5) { 
+            background-image: url(https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80);
+            animation-delay: 40s; 
+          }
+
+          @keyframes imageAnimation { 
+            0% { 
+              opacity: 0; 
+              animation-timing-function: ease-in;
+            }
+            10% {
+              opacity: 1;
+              animation-timing-function: ease-out;
+            }
+            20% {
+              opacity: 1
+            }
+            30% {
+              opacity: 0
+            }
+          }
+
+          /* Older browser support - .no-cssanimations class added by modernizr */
+          .no-cssanimations .slideshow li {
+            opacity: 1;
+          }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
+    </head>
+    <body>
+    
+    <div id="landing-header">
+ 		<h1>Welcome to Foodinterest!</h1>
+		<a href="/pins" class="btn btn-lg btn-success">View All Recipes</a>
+    </div>
+    
+    <ul class="slideshow">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
 {% include "partials/footer.html" %}
