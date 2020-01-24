@@ -8,17 +8,29 @@
   crossorigin="anonymous">
 </head>
 <body>
-  <form action="/pins" method="POST">
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title">
-    <label for="description">Description</label>
-    <input type="text" name="description" id="description">
-    <label for="image">Image</label>
-    <input type="text" name="image" id="image">
-    <label for="source">Source</label>
-    <input type="text" name="source" id="source">
-    <button>Submit</button>
-  </form>
+  <div class="container">
+    <form action="/pins" method="POST">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" name="title" class="form-control" id="title">
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+      <input type="text" name="description" class="form-control" id="description">
+      </div>
+      <div class="form-group">
+        <label for="image">Image</label>
+        <input type="text" name="image" class="form-control" id="image" aria-describedby="imageHelp">
+        <small id="imageHelp" class="form-text text-muted">Please make sure that valid url to image is entered.</small>
+      </div>
+      <div class="form-group">
+        <label for="source">Source</label>
+        <input type="text" name="source" class="form-control" id="source" aria-describedby="sourceHelp">
+        <small id="sourceHelp" class="form-text text-muted">Please make sure that valid url is entered.</small>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
 
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" 
