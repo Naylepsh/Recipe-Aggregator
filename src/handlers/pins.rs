@@ -34,12 +34,13 @@ pub async fn new(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpR
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-pub async fn create(params: web::Form<NewPin>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
-  // add actual front-end instead of json // or redirect to index
-  Ok(web::block(move || params.create(pool))
+pub async fn create(tmpl: web::Data<tera::Tera>, params: web::Form<NewPin>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+  let pool_backup = pool.clone();
+  web::block(move || params.create(pool))
   .await
-  .map(|pin| HttpResponse::Ok().json(pin))
-  .map_err(|_| HttpResponse::InternalServerError())?)
+  .map_err(|_| HttpResponse::InternalServerError())?;
+
+  index(tmpl, pool_backup).await
 }
 
 pub async fn edit(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
