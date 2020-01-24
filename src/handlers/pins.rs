@@ -35,15 +35,20 @@ pub async fn new(tmpl: web::Data<tera::Tera>, _req: HttpRequest) -> Result<HttpR
 }
 
 pub async fn create(params: web::Form<NewPin>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
-  // add actual front-end instead of json
+  // add actual front-end instead of json // or redirect to index
   Ok(web::block(move || params.create(pool))
   .await
   .map(|pin| HttpResponse::Ok().json(pin))
   .map_err(|_| HttpResponse::InternalServerError())?)
 }
 
-// pub async fn edit(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
-//   let s = tmpl.render("edit-post.html", &tera::Context::new())
-//               .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-//   Ok(HttpResponse::Ok().content_type("text/html").body(s))
-// }
+pub async fn edit(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+  let pin = web::block(move || Pin::find(id.into_inner(), pool))
+  .await
+  .map_err(|_| HttpResponse::InternalServerError())?;
+
+  let mut ctx = tera::Context::new();
+  ctx.insert("pin", &pin);
+  let s = tmpl.render("pins/edit.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
+  Ok(HttpResponse::Ok().content_type("text/html").body(s))
+}
