@@ -1,4 +1,5 @@
-# Pinterest-like aggregator written in Rust for my Rust course project
+# Food-terest (temporary name)
+Half-assed Pinterest-like CRUD webservice intended to work as an recipe aggregator built with Actix.
 
 ## Getting started
 * Install Rust
