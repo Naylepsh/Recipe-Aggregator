@@ -16,7 +16,7 @@ pub async fn index(tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: Htt
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
 }
 
-pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>, _req: HttpRequest)
+pub async fn show(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web::Data<Pool>)
 -> Result<HttpResponse, Error> {
   let pin = web::block(move || Pin::find(id.into_inner(), pool))
   .await
@@ -51,4 +51,14 @@ pub async fn edit(id: web::Path<String>, tmpl: web::Data<tera::Tera>, pool: web:
   ctx.insert("pin", &pin);
   let s = tmpl.render("pins/edit.html", &ctx).map_err(|_| error::ErrorInternalServerError("Template error"))?;
   Ok(HttpResponse::Ok().content_type("text/html").body(s))
+}
+
+pub async fn update(id: web::Path<String>, tmpl: web::Data<tera::Tera>, params: web::Form<NewPin>, pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+  let id_backup = web::Path::from(id.clone());
+  let pool_backup = pool.clone();
+  web::block(move || Pin::update(id.into_inner(), params.into_inner(), pool))
+  .await
+  .map_err(|_| HttpResponse::InternalServerError())?;
+
+  show(id_backup, tmpl, pool_backup).await
 }

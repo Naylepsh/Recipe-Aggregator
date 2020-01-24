@@ -33,9 +33,17 @@ impl Pin {
     let connection: &SqliteConnection = &pool.get().unwrap();
     pins::table.find(_id).first(connection)
   }
+
+  pub fn update(_id: String, pin_params: NewPin, pool: web::Data<Pool>) -> Result<(), diesel::result::Error> {
+    let connection: &SqliteConnection = &pool.get().unwrap();
+    diesel::update(pins::table.find(_id))
+        .set(pin_params)
+        .execute(connection)?;
+    Ok(())
+  }
 }
 
-#[derive(Insertable, Deserialize)]
+#[derive(Insertable, Deserialize, AsChangeset)]
 #[table_name = "pins"]
 pub struct NewPin {
   pub id: Option<String>,
