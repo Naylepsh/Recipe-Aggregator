@@ -4,6 +4,7 @@ pub mod db;
 pub mod schema;
 pub mod models;
 
+use actix_files as fs;
 use actix_web::{web, middleware, App, HttpServer};
 use tera::Tera;
 
@@ -23,6 +24,11 @@ async fn main() -> std::io::Result<()> {
             .data(tera)                             // enable tera templates
             .data(db::establish_connection())       // connect to database
             .wrap(middleware::Logger::default())    // enable logger
+            .service(
+                fs::Files::new("/static", "./static")
+                    .show_files_listing()
+                    .use_last_modified(true),
+            )
             .service(web::resource("/").route(web::get().to(handlers::landing::index)))
             .service(web::resource("/pins/new").route(web::get().to(handlers::pins::new)))
             .service(web::resource("/pins")
