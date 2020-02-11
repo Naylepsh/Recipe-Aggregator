@@ -1,4 +1,4 @@
-# Food-terest (temporary name)
+# Description
 Half-assed Pinterest-like (ideally) CRUD webservice intended to work as an recipe aggregator. Built with Actix.
 
 ## Getting started
